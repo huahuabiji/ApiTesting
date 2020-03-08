@@ -46,6 +46,31 @@ class TestRequests(object):
         logging.info(json.dumps(r.json(), indent=2))
 
 
+    def test_cookies(self):
+        r=requests.get(self.url, cookies={"a":"1", "b":"string corntent"})
+        logging.info(r.text)
+
+
+    # 带有cookies的get请求
+    def test_xueqiu_quote(self):
+        url="https://xueqiu.com/v5/stock/portfolio/stock/list.json"
+        r=requests.get(self.url,
+                       params={"category":"1"},
+                       headers={"user_Agent":"xueqiu"},
+                       cookies={"u":"3446260779","xq_a_token":"5806a70c6bc5d5fb2b00978aeb1895532fffe502"},
+                       # proxies={"http":"127.0.0.1:8888"},
+                       # verity=False
+                    )
+        logging.info(r.text)
+        logging.info(json.dumps(r.json(),indent=2))
+       # 断言 assert r.json()["data"]["category"] == 2
+
+
+
+
+
+
+
 
 
 
