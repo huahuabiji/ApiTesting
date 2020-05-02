@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 # coding=utf-8
+import pytest
 
 from weixin.contact.token import *
 import requests
@@ -15,6 +16,7 @@ class TestDepartment:
     def setup(self):
         print("setup")
 
+# 测试创建多层级的部门，最多15
     def test_create_depth(self):
         parentid=1
         t=str(int(datetime.datetime.now().timestamp()))
@@ -34,6 +36,7 @@ class TestDepartment:
             logging.info(json.dumps(r, indent=2))
             logging.debug(r)
             parentid=r["id"]
+            assert r["errcode"]==0
 
     # def test_create_name(self):
     #     data={
@@ -47,11 +50,17 @@ class TestDepartment:
     #     logging.info(json.dumps(r, indent=2))
     #     logging.debug(r)
 
-
-    def test_create_order(self):
+# name字符测试 参数化
+    @pytest.mark.parametrize("name",{
+        "东京动漫研究所",
+        "도쿄 애니메이션 연구소",
+        "東京アニメ研究所",
+        "معهد طوكيو أنمي للأبحاث",
+        "Токио аниме изследователски институт"
+    })
+    def test_create_order(self,name):
         data={
-                "name": "广州研发中心",
-                "name_en": "RDGZ",
+                "name": name,
                 "parentid": 1,
                 "order": 1,
         }
@@ -60,6 +69,8 @@ class TestDepartment:
                         json=data
                       ).json()
         logging.debug(r)
+        assert r["errcode"]==0
+
 
     def test_get(self):
         r=requests.get("https://qyapi.weixin.qq.com/cgi-bin/department/list",
